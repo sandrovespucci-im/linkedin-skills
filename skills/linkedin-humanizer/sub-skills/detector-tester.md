@@ -8,7 +8,7 @@ This is the one skill in the bundle that sends your text to someone else. Every 
 here is a hosted API, so running it uploads the draft, in full, to whichever services you
 have keys for: GPTZero, Originality.ai, ZeroGPT, Sapling, Copyleaks, Hive, QuillBot,
 Writer and Scribbr. Nothing else in this bundle does that. Drafting, scrubbing, auditing
-and profile-building all happen locally, and publishing goes only to Publora.
+and profile-building all happen locally, and publishing happens only from the built-in browser after explicit approval.
 
 What that means in practice:
 

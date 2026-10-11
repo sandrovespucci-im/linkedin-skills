@@ -1,5 +1,7 @@
 # LinkedIn Comment Threading Rules
 
+> **In this fork replies are posted from the built-in browser**, by clicking "Rispondi" under the comment: LinkedIn's UI places the reply correctly. The API detail below is kept as background on why nested replies read the way they do.
+
 ## Two-level flattening
 
 LinkedIn's UI shows replies two levels deep. Every reply, no matter how many logical turns into a conversation, is stored with `parentComment` pointing to the TOP-level comment.

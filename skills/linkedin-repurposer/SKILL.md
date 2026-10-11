@@ -1,6 +1,6 @@
 ---
 name: linkedin-repurposer
-description: "Repurpose existing content into a native LinkedIn post. Take a tweet, thread, YouTube video, blog, or newsletter and rebuild it for LinkedIn: re-hook before the fold, expand to the 900 to 1300 char sweet spot, add whitespace and a CTA, move links to the first comment, run the humanizer, publish via Publora on approval. Not for writing from scratch (use linkedin-post-writer), not for auditing a draft (use linkedin-humanizer --mode audit)."
+description: "Repurpose existing content into a native LinkedIn post. Take a tweet, thread, YouTube video, blog, or newsletter and rebuild it for LinkedIn: re-hook before the fold, expand to the 900 to 1300 char sweet spot, add whitespace and a CTA, move links to the first comment, run the humanizer, publish from the built-in browser on approval. Not for writing from scratch (use linkedin-post-writer), not for auditing a draft (use linkedin-humanizer --mode audit)."
 ---
 
 # LinkedIn Repurposer
@@ -27,10 +27,10 @@ Not for a blank-page draft (use `linkedin-post-writer`) and not for reviewing a 
 3. **Re-hook for LinkedIn.** The hook must land in the first 210 characters, before the "...see more" fold. The source's hook rarely survives; write a new first line using one of the 20 formulas in `../../references/hook-formulas.md`, picked by the goal.
 4. **Expand to LinkedIn length.** X compresses; LinkedIn breathes. Grow the spine into the 900 to 1300 char sweet spot: short paragraphs, double line breaks between ideas, one concrete detail per beat. A dense tweet becomes 4 to 6 short paragraphs, not a wall.
 5. **Add the LinkedIn shape.** Whitespace between ideas, a moment of real stakes or vulnerability (pure-insight posts do not land in 2026), and one clear closing question or CTA.
-6. **Fix links and artifacts.** Move any external link to the first comment (in-body links suppress reach). Strip off-platform artifacts: hashtag walls, "link in bio", "smash subscribe", X @-handles, "as I tweeted" throat-clearing. 0 to 2 hashtags at the end.
+6. **Fix links and artifacts.** Move any external link to the first comment (in-body links suppress reach). Strip off-platform artifacts: hashtag walls, "link in bio", "smash subscribe", X @-handles, "as I tweeted" throat-clearing. No hashtags on LinkedIn (vault rule, `../../references/strato-vault.md`).
 7. **Humanizer pass.** Run the scrub: 2026 AI vocab by density, em dashes above the cap (about one per 100 words), stacked rule-of-three triads, generic openers and reveal bridges. Keep the user's real numbers and named entities from the source.
 8. **Approval card.** Show: source -> LinkedIn mapping (what became what), formula used, char count, suggested posting window (Tue/Wed/Thu 7:30 to 9:00 AM local), the link-in-first-comment note.
-9. **On approval.** Publish via `lib.publish(kind="post", draft_text=<approved>, target_url="https://www.linkedin.com/post/new/", platforms=[{"platform":"linkedin","platformId":<id>}], scheduled_time=<iso_or_None>)`. The wrapper handles Publora / manual / diy routing. If the user reconsiders after approving, call `lib.unpublish(post_group_id=<postGroupId from the response>)` to cancel it before it goes out. On the publora tier the post is already queued, so the dashboard is otherwise the only way back.
+9. **On approval.** Publish through the built-in browser following `../../references/strato-browser.md` §Pubblicazione: the exact approved text, screenshot of the filled composer, click, then report the permalink. One explicit yes per object; no scheduling (a future date means the draft waits in chat).
 
 ## Native-fit rules (source -> LinkedIn)
 

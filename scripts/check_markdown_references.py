@@ -16,6 +16,8 @@ import re
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILLS = ROOT / "skills"
+# Paths into Sandro's private vault (fork theim): resolved in the vault session, not here.
+VAULT_PREFIXES = ("wiki/", "daily/", "assets/", "tasks/")
 REFERENCE = re.compile(r"`((?:\.\.?/)*[A-Za-z0-9_.\-]+(?:/[A-Za-z0-9_.\-]+)*\.md)(?:#[^`]*)?`")
 
 
@@ -38,7 +40,7 @@ def main() -> None:
         text = document.read_text(encoding="utf-8")
         for match in REFERENCE.finditer(text):
             ref = match.group(1)
-            if "://" in ref or ref.startswith("/"):
+            if "://" in ref or ref.startswith("/") or ref.startswith(VAULT_PREFIXES):
                 continue
             if not resolves(document, ref):
                 broken.append(f"{document.relative_to(ROOT)}: {ref}")

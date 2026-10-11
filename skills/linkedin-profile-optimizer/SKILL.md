@@ -16,14 +16,14 @@ Audit the nine components of a LinkedIn profile (photo, banner, headline, About,
 
 ## Input
 
-**Paste the profile, do not just link it.** The read layer covers posts, comments and engagers; there is no profile actor, so a profile URL cannot be fetched, with an APIFY_TOKEN or without one. Open the profile, copy the sections, paste them in. Screenshots of the visual parts work too.
+**Read the profile from the built-in browser** (`../../references/strato-browser.md`): open the profile URL, `get_page_text`, screenshot for photo, banner and Featured. If it does not load, ask the user to paste the sections. Which profile: Sandro's personal profile or the The I'm page (`../../references/strato-vault.md`).
 
 - Profile text: headline, About, Experience entries, Skills, custom URL
 - The visual three (photo, banner, Featured): screenshots, or a sentence describing each
 - Goal: **clients** / **job seeking** / **authority** — Featured and CTA vary by goal
 - Optional: draft content to grade against the existing profile
 
-If the user supplies only a URL, ask for the text before scoring anything. Never score a section you have not been shown, and never infer profile content from the URL slug.
+If the browser cannot read the profile, ask for the text before scoring anything. Never score a section you have not been shown, and never infer profile content from the URL slug.
 
 ## Output
 

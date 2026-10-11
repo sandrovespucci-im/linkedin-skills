@@ -1,6 +1,6 @@
 ---
 name: linkedin-post-writer
-description: "Draft a new LinkedIn post from scratch using one of 20 2026 hook formulas (anaphora, R.I.P., time-anchor, curiosity-gap, contrarian, controlled A/B, false-binary, and more) plus a founders-edition angle library, picked by engagement goal (comments, reposts, likes, saves). Runs the humanizer pass and schedules via Publora on approval. Use to write a post, find a hook or proven format, or get founder-specific angles. Not for reviewing existing drafts (use linkedin-humanizer --mode audit)."
+description: "Draft a new LinkedIn post from scratch using one of 20 2026 hook formulas (anaphora, R.I.P., time-anchor, curiosity-gap, contrarian, controlled A/B, false-binary, and more) plus a founders-edition angle library, picked by engagement goal (comments, reposts, likes, saves). Runs the humanizer pass and publishes from the built-in browser on approval. Use to write a post, find a hook or proven format, or get founder-specific angles. Not for reviewing existing drafts (use linkedin-humanizer --mode audit)."
 ---
 
 # LinkedIn Post Writer
@@ -85,13 +85,13 @@ If the user knows what they want the post to earn, start here, then narrow by to
    - Double line-breaks between ideas, not single; 1-2 sentence paragraphs are the recommended layout
    - One contrast and one triple per post maximum; no "The result?" / "Plot twist:" reveal bridges (Density rule in `../../references/hook-formulas.md`)
    - Close with a specific question, and add a one-line P.S. when there is a real follow-up (+7.5%)
-   - 0-2 hashtags, placed at end
+   - No hashtags (vault rule for LinkedIn)
    - No external links in body (move to first comment)
 4. **Humanizer pass.** Scrub 2026 AI vocab by density, cap em dashes (about one per 100 words), break stacked triads, generic openers and reveal bridges. Add at least 1 specific number, 1 named entity, 1 first-person concrete detail per 100 words.
 5. **Run audit.** Optionally invoke `linkedin-humanizer --mode audit` for algorithm + voice checks before showing to user.
-6. **Optional illustration.** If the post would land better with a visual (or the user asks), offer one: draft an image and generate it with `lib.illustrate(prompt, kind="wide")`, pulling brand handle/color from Voice & Brand Profile §6 for the overlay. Show the returned `url` + `cost` in the approval card and attach it via `media_urls` on publish. For a **multi-image grid** (2-10 images in one post) use `lib.illustrate_set([p1, p2, ...], kind="wide", overlay=brand)` and pass every `url` in `media_urls=[...]`. For a **quote-card of the hook**, skip the model and typeset it: `lib.quote_card("<hook line>", handle="@handle", style="brand")` — crisp text, same `url` flow. Full workflow: `../linkedin-humanizer/sub-skills/illustration.md`. No Pixfaro key -> it drafts the prompt for the user to generate manually.
+6. **Optional image.** If the post would land better with a visual (or the user asks), offer one built with our own pipeline (`../../references/strato-immagini.md`): an HTML composition rendered to PNG in the public brand look. The image carries the verifiable fact, the voice stays in the text; no CTA in the image. Show it in the approval card: it is approved together with the text, because LinkedIn cannot swap the image of a published post.
 7. **Approval card.** Show: formula used, full draft, char count, suggested posting window (Tue/Wed/Thu 7:30-9:00 AM local), reaction targets from likely commenters, and the illustration (if any).
-8. **On approval.** Call `lib.publish(kind="post", draft_text=<approved>, target_url="https://www.linkedin.com/post/new/", platforms=[{"platform":"linkedin","platformId":<id>}], scheduled_time=<iso_or_None>, media_urls=<list_or_None>)`. The wrapper handles Publora / manual / diy routing. If the user reconsiders after approving, call `lib.unpublish(post_group_id=<postGroupId from the response>)` to cancel it before it goes out. On the publora tier the post is already queued, so the dashboard is otherwise the only way back.
+8. **On approval.** Publish through the built-in browser following `../../references/strato-browser.md` §Pubblicazione: the exact approved text, screenshot of the filled composer, click, then report the permalink. One explicit yes per object; no scheduling (a future date means the draft waits in chat). Attach the approved image as described in `../../references/strato-browser.md` §Immagini da allegare.
 
 ## Hard rules (from user feedback)
 

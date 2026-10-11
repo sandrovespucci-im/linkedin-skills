@@ -1,9 +1,9 @@
 # Sub-skill: Build / update the Voice & Brand Profile
 
-Builds or refreshes `../../../references/voice-profile.md` so every writing skill in
+Builds or refreshes the vault voice file that `../../../references/voice-profile.md` points to (Sandro or The I'm) so every writing skill in
 this bundle drafts in the user's real voice instead of a generic "human" voice.
 Runs on any agent (Claude Code, Codex, OpenClaw): the core path needs only the
-user's own writing pasted in. Apify is an optional accelerator, never required.
+user's own writing, read from the built-in browser or pasted in.
 
 ## When this runs
 
@@ -15,10 +15,7 @@ user's own writing pasted in. Apify is an optional accelerator, never required.
 
 1. **Pasted samples (portable default).** Ask for 3-6 of the user's own real
    LinkedIn posts or comments. This alone is enough; no token, no history needed.
-2. **Apify-assisted (optional).** If `APIFY_TOKEN` is set and the user gives their
-   profile URL, pull recent activity with `lib.ApifyClient.fetch_user_recent_comments(username=...)`
-   (and any post URLs they share via `lib.fetch_post`) to gather more samples.
-   Treat as an accelerator on top of, not a replacement for, pasted samples.
+2. **Browser-assisted.** Open the activity page (posts) in the built-in browser and read 3-6 recent posts with `get_page_text` (`../../../references/strato-browser.md`). Ask first which voice: Sandro's profile or the The I'm page.
 3. **Manual.** The user can also just tell you their niche, rules, and links.
 
 ## Steps
@@ -33,9 +30,9 @@ user's own writing pasted in. Apify is an optional accelerator, never required.
 3. **Infer niche, ICP, and pillars** from the sample topics; confirm with the user
    rather than guessing.
 4. **Capture hard rules and CTA/link style** the samples reveal or the user states.
-5. **Write `../../../references/voice-profile.md`**: fill sections 1-5, copy the 2-4
+5. **Write the vault voice file** (`wiki/synthesis/linkedin-voce-sandro.md` or `wiki/synthesis/linkedin-voce-theim.md`): fill sections 1-5, copy the 2-4
    strongest lines verbatim into "Signature examples", and set the Status block to
-   `filled: yes`, `source: <pasted|apify|manual>`, `updated: <today's date>`.
+   `filled: yes`, `fonte: <incollato|browser|manuale>`, `updated: <today's date>`.
 6. **Show the user the filled profile for approval** before saving, and tell them
    any writing skill will now match it automatically. They can edit the file anytime.
 

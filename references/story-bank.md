@@ -1,108 +1,27 @@
-# Story Bank
+# Story Bank (puntatore)
 
-The raw material your posts are made of: what you have actually done, in numbers,
-with names and dates. The Voice Profile holds *how you sound*. This holds *what
-you have to say*.
-
-Every writing skill in this bundle reads it before drafting, so it stops asking
-you for "a specific number or moment" on every single request and starts drawing
-from what you already told it once.
-
-> **Keep this out of git.** It holds career detail, figures, failures and named
-> people. It is a file in this repository, so a push carries it wherever you push,
-> a public fork included. Add `references/story-bank.md` to your `.gitignore`
-> before you fill it, or keep the filled copy outside the repo. Nothing here is
-> sent to us or to any service; git is the only way it travels.
-
-Fill it by running `linkedin-interviewer`, which interviews you and writes this
-file. You can also edit it by hand at any time; the skill reads whatever is here.
-
-## Status
+**Questo file non contiene dati e non va riempito.** Il fork è pubblico: un file
+riempito qui viaggerebbe col repo a ogni push.
 
 - filled: no
-- updated: (date)
-- sessions: (how many interviews have contributed)
 
----
+La Story Bank vera sta nel vault di Sandro:
+**`wiki/synthesis/linkedin-story-bank.md`** (percorso relativo alla radice del
+vault, la cartella di lavoro della sessione).
 
-## 1. Timeline
+Ogni skill che "carica la Story Bank" legge quel file. Ogni skill che la "scrive"
+(l'Interviewer) scrive lì, rispettando le regole di `strato-vault.md`:
+puntatore alla canonica + frase viva, niente copia di fatti, niente numeri non
+verificati, niente contenuto `personale`.
 
-Where you have worked and what changed at each stop. Dates matter: "March 2024"
-beats "last year", because a post can anchor on it.
+Le sezioni (Percorso, Numeri, Costruito, Svolte, Cicatrici, Posizioni, Storie già
+raccontate, Nomi utilizzabili, Fuori limite) e il campo `filled: yes|no` sono
+definiti nel file del vault.
 
-- (role, company, from-to, what you were actually responsible for)
+## Come la usano le bozze
 
-## 2. Receipts
-
-The numbers you can state without checking. This is the section the drafts reach
-for most, because one odd-precision figure with a named referent is the single
-strongest signal that a human wrote the post.
-
-Good: "cut deploy time from 22 minutes to 9, team of four, Q2 2025".
-Useless: "improved efficiency significantly".
-
-- (number, what it measures, when, who or what it belongs to)
-
-## 3. Shipped
-
-Things that exist because you worked on them. Products, migrations, hires, papers,
-events, rescues.
-
-- (what it was, your part in it, what it cost or returned)
-
-## 4. Turning points
-
-The moments where you changed your mind or the plan changed under you. These carry
-posts better than successes do, and they are the hardest to invent.
-
-- (what happened, what you believed before, what you believe now)
-
-## 5. Scars
-
-What went wrong and what it taught you. Kept separate from turning points because
-the shape differs: a scar is a cost you paid, not a view you revised.
-
-- (what broke, the real cost, what you do differently)
-
-## 6. Positions
-
-Opinions you would defend in a room that disagreed. A position with no cost to
-holding it is not a position; note what holding it costs you.
-
-- (the claim, who disagrees, why you hold it anyway)
-
-## 7. Recurring stories
-
-The three or four you already tell out loud, at dinner or in interviews. They are
-proven: you know they land. Write them here before a draft dulls them.
-
-- (the story in two lines, and the point it makes)
-
-## 8. Names you can use
-
-People, companies, tools and places you are free to name in public, and the ones
-you are not. Drafts stay vague when they do not know which is which.
-
-- Free to name: (…)
-- Never name: (…)
-- Ask first: (…)
-
-## 9. Off limits
-
-Subjects that stay out of posts regardless of how well they would perform: active
-deals, litigation, health, other people's business, anything under NDA.
-
-- (…)
-
----
-
-## How drafts use this
-
-- A draft needs a concrete detail: it takes one from **Receipts** or **Shipped**
-  rather than asking you mid-session.
-- A hook formula needs a reversal or a confession: **Turning points** and **Scars**
-  are where those live.
-- A post needs an argument: **Positions** supplies the claim and the opposition.
-- Anything a draft cannot source from here, it asks about or leaves out. It does
-  not invent a number. If you see an unfamiliar figure in a draft, that is a bug
-  worth reporting.
+- Serve un dettaglio concreto: si prende da **Numeri** o **Costruito**, non lo si
+  chiede a metà bozza.
+- Una formula di hook vuole una svolta o una confessione: **Svolte** e **Cicatrici**.
+- Un post vuole una tesi: **Posizioni** dà la tesi e chi la contesta.
+- Quello che non si trova lì si chiede o si lascia fuori. Mai un numero inventato.

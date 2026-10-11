@@ -65,9 +65,9 @@ linkedin-humanizer --mode all <text>
 linkedin-humanizer --mode audit <text>
 
 # Profile: build/update the user's Voice & Brand Profile so every writing
-# skill drafts in their real voice. Learns from 3-6 pasted posts (portable, no
-# token) or, if APIFY_TOKEN is set, from pulled activity. Writes
-# ../../references/voice-profile.md. See sub-skills/voice-profile.md.
+# skill drafts in their real voice. Learns from 3-6 real posts, read from the
+# built-in browser or pasted. Writes the chosen voice file in the vault
+# (see ../../references/voice-profile.md). See sub-skills/voice-profile.md.
 linkedin-humanizer --mode profile
 ```
 

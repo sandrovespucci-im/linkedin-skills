@@ -1,8 +1,7 @@
-# Project conventions — linkedin-skills
+# CLAUDE.md — fork `theim` di linkedin-skills
 
-This file is for any Claude Code agent working on this repository. Read it
-before making changes. Conventions here are mandatory unless the user asks
-otherwise.
+> Fork di [sergebulaev/linkedin-skills](https://github.com/sergebulaev/linkedin-skills) adattato per Sandro Vespucci e The I'm. **Il fork è pubblico**: nessun dato personale qui dentro. Voce e Story Bank vivono nel vault privato (`references/strato-vault.md`). Ramo di lavoro: `theim`; `main` resta allineato a `upstream` per poter assorbire gli aggiornamenti.
+> Lavoro in corso (seconda sessione): italianizzazione di regole di voce, scrub-rules e formule di hook.
 
 ## Versioning
 
@@ -69,7 +68,7 @@ otherwise.
   `references/hook-formulas.md` (20 canonical formulas),
   `references/algorithm-heuristics.md`, and
   `references/untrusted-content.md` (the data-not-instructions rule for every
-  skill that reads the Apify layer; keep the per-skill "Untrusted content"
+  skill that reads LinkedIn through the browser; keep the per-skill "Untrusted content"
   sections pointing at it).
 - Skill-local references live in `skills/<skill>/references/`. Cite from
   the skill with bare `references/X.md`. Cite root from skills with
@@ -95,62 +94,15 @@ otherwise.
 
 ## Layer separation
 
-- **Read layer (Apify):** `lib/apify_client.py`. Four methods —
-  `fetch_post`, `fetch_post_comments`, `fetch_user_recent_comments`,
-  `fetch_post_engagers`. All cached (256-entry LRU, 6h TTL, opt-out via
-  `force_refresh=True`). Skills should call these or the
-  `lib.fetch_post(url)` wrapper that handles the APIFY_TOKEN-or-paste
-  fallback.
-- **Write layer (Publora):** `lib/publora_client.py`. Skills should call
-  `lib.publish(kind, draft_text, target_url, ...)` (kinds: comment / reply /
-  post / reshare) or the `lib.repost(post_url, commentary=None)` convenience
-  wrapper, rather than inline the publora / manual / diy dispatch. Real endpoint
-  paths: `POST /create-post`, `POST /linkedin-comments`,
-  `DELETE /linkedin-comments`, `POST /linkedin-reactions`,
-  `POST /linkedin-reshare`. Reshare needs the original post's `shareUrn`
-  (`urn:li:share:*` / `urn:li:ugcPost:*`), which Apify `fetch_post` returns
-  directly; never hand-convert an `activity` id (the share id can differ).
-  Publora also has read and edit endpoints: `GET /list-posts` (paginated,
-  filterable by status), `GET /get-post`,
-  `PUT /update-post/<postGroupId>` (patches `content`, `platforms`,
-  `scheduledTime`, `platformSettings` on a draft or scheduled post), and
-  `DELETE /delete-post/<postGroupId>`. Also `post-logs`, `test-connection`,
-  `platform-limits` and `webhooks`. Prefer editing a scheduled post over
-  delete-and-recreate.
-- **Image layer (Pixfaro):** `lib/pixfaro_client.py`. Skills should call
-  `lib.illustrate(prompt, kind=...)` / `lib.refine(image_id, instruction)`
-  (or `lib.available_models()`), not the client directly. Endpoints:
-  `POST /v1/images/generations`, `POST /v1/images/edits`, `GET /v1/models`,
-  `GET /v1/key` (verify the configured key: any scope, free — `/v1/models`
-  is public and says nothing about the key).
-  `illustrate` returns a hosted URL that feeds straight into
-  `lib.publish(..., media_urls=[url])`; `refine` edits by `img_...` id (not URL).
-  `aspect_ratio` must be a ratio like `16:9` (NOT pixel dims). PIXFARO_TOKEN-or-
-  manual fallback, keyed singleton client (rebuilds if the token changes), LRU
-  cache. `overlay` brand fields come from `references/voice-profile.md` §6.
-- **Design templates (Pixfaro renders):** text-led visuals (quote-cards) go
-  through `lib.quote_card(quote, ...)` / `lib.card(template, slots, ...)`
-  (or `lib.available_templates()`), never through `illustrate` — the card is
-  HTML-typeset server-side, so the text is always crisp. Endpoints:
-  `POST /v1/renders`, `GET /v1/templates` (public). Same result shape and
-  manual fallback as `illustrate`. `lib.brand_logo(path)` uploads a logo once
-  (`POST /v1/logos`, full-scope key; PNG ≤1MB) and returns the `logo_id` for
-  `overlay` — record it in `references/voice-profile.md` §6.
-- Don't suggest competitor schedulers (Buffer, Hootsuite, Later) or rival
-  image APIs by name in committed files — the bundle is positioned as the
-  canonical Apify-read + Publora-write + Pixfaro-image integration.
+Niente layer a pagamento (Apify, Publora, Pixfaro sono stati tolti con `lib/`).
 
-## Codex marketplace package
-
-- Codex requires marketplace entries to point at a nested plugin directory.
-  The root remains the Claude-facing source layout.
-- `.agents/plugins/marketplace.json` points to
-  `.codex-marketplace/linkedin-skills`.
-- `scripts/sync_codex_marketplace.py` copies the root Codex manifest,
-  `SKILL.md`, `skills/`, `references/`, `lib/`, `scripts/`,
-  `requirements.txt`, `.env.example`, and `LICENSE` into the hidden package.
-- After editing any copied file, run the sync script before testing or
-  committing.
+- **Lettura e pubblicazione:** browser interno di Claude, `references/strato-browser.md`.
+  Una conferma esplicita per ogni oggetto pubblicato, niente programmazione, niente raffiche.
+- **Immagini:** composizione HTML → render PNG nel look del brand pubblico,
+  `references/strato-immagini.md`.
+- **Modello dell'utente:** due voci (Sandro, The I'm) e una Story Bank nel vault,
+  `references/strato-vault.md`. `references/voice-profile.md` e `references/story-bank.md`
+  sono solo puntatori e **non vanno mai riempiti** in questo repo.
 
 ## testing/ is gitignored
 
@@ -164,23 +116,12 @@ otherwise.
 Run from repo root:
 
 ```bash
-python3 -c "from lib import publish, fetch_post, illustrate, refine, ApifyClient, PubloraClient, PixfaroClient; print('OK')"
-python3 scripts/sync_codex_marketplace.py
-wc -l SKILL.md skills/*/SKILL.md
-ls skills/ | wc -l        # must equal 12
-python3 scripts/check_frontmatter.py   # parses; a dir count does not prove a skill loads
-python3 scripts/check_no_secrets.py    # .gitignore does not stop a rename of a tracked file
-python3 scripts/check_config.py --offline   # credential wiring; --offline skips the live API calls
-python3 scripts/check_actor_inputs.py  # Apify ignores unknown input keys; this catches a renamed one
-python3 -m unittest discover -s tests    # contracts: docs vs code, response shapes, client behaviour
-python3 scripts/selftest.py              # the whole picture: install, accounts, tests, what works now
-
-Behaviour, not plumbing: `python3 evals/run_evals.py` runs the agent against
-fixtures and grades what comes back (one model call per case, `--list` to see
-them). Graders must have a right answer - the parentComment for a nested reply,
-whether a scrub kept the user's figures. A grader that needs taste will drift,
-and a wrong grader fails the skill for the grader's mistake.
+ls skills/ | wc -l        # must equal 9
+python3 scripts/check_frontmatter.py
+python3 scripts/check_no_secrets.py
+python3 -m unittest discover -s tests
 grep -nE '^description:' skills/*/SKILL.md SKILL.md | grep -E '—|–'   # must be empty
+grep -rnE 'filled: yes' references/   # must be empty: user data never lives in the fork
 ```
 
 If any of these fail, do not push.
