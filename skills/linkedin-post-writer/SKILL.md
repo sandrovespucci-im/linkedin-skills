@@ -89,9 +89,9 @@ If the user knows what they want the post to earn, start here, then narrow by to
    - No external links in body (move to first comment)
 4. **Humanizer pass.** Scrub 2026 AI vocab by density, cap em dashes (about one per 100 words), break stacked triads, generic openers and reveal bridges. Add at least 1 specific number, 1 named entity, 1 first-person concrete detail per 100 words.
 5. **Run audit.** Optionally invoke `linkedin-humanizer --mode audit` for algorithm + voice checks before showing to user.
-6. **Optional image.** If the post would land better with a visual (or the user asks), offer one built with our own pipeline (`../../references/strato-immagini.md`): an HTML composition rendered to PNG in the public brand look. The image carries the verifiable fact, the voice stays in the text; no CTA in the image. Show it in the approval card: it is approved together with the text, because LinkedIn cannot swap the image of a published post.
+6. **No image (suspended).** Image generation is on hold until the pipeline is adapted to the new design system (`../../references/strato-immagini.md`). Posts go out as text only; if the user asks for an image, remind them of the hold and ask how to proceed.
 7. **Approval card.** Show: formula used, full draft, char count, suggested posting window (Tue/Wed/Thu 7:30-9:00 AM local), reaction targets from likely commenters, and the illustration (if any).
-8. **On approval.** Publish through the built-in browser following `../../references/strato-browser.md` §Pubblicazione: the exact approved text, screenshot of the filled composer, click, then report the permalink. One explicit yes per object; no scheduling (a future date means the draft waits in chat). Attach the approved image as described in `../../references/strato-browser.md` §Immagini da allegare.
+8. **On approval.** Publish through the built-in browser following `../../references/strato-browser.md` §Pubblicazione: the exact approved text, screenshot of the filled composer, click, then report the permalink. One explicit yes per object; no scheduling (a future date means the draft waits in chat).
 
 ## Hard rules (from user feedback)
 

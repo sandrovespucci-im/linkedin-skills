@@ -1,5 +1,11 @@
 # Strato immagini
 
+> **⏸ SOSPESO dall'11/10/2026 (decisione di Sandro).** Nessuna skill propone o genera
+> immagini: i post escono solo testo. La pipeline va prima adattata al nuovo design
+> system; finché non c'è, niente quote-card, schemi o caroselli generati. Se Sandro
+> chiede un'immagine, si ricorda la sospensione e si chiede come procedere.
+> Il resto di questo file è la bozza di lavoro per quando si riprende.
+
 Sostituisce Pixfaro. Le immagini le genera Claude, con la stessa catena
 già in produzione per i canali The I'm: **composizione HTML → render PNG/JPEG**.
 Processo e regole canoniche nel vault: [[pipeline-pubblicazione-social]];
@@ -10,9 +16,9 @@ look in [[theim-design-system]] §0 bis.
 - **La foto è informativa, il commento è personale.** L'immagine porta il fatto
   verificabile (un numero, uno schema, una citazione); opinione e voce stanno nel
   testo del post. Niente immagini-slogan.
-- **Il look si legge dal canale, non da una skill.** Design system pubblico:
-  arancio `#E8650A` + viola `#7D6DFF`, font Outfit + DM Sans. La skill
-  `the-im-instagram` porta una palette morta: non usarla come fonte.
+- **Il look si legge dal canale, non da una skill.** Fonte: il design system
+  del vault, nella versione nuova. Nessuna skill esistente di generazione
+  immagini va usata come base.
 - **Il file approvato è il file pubblicato.** Niente ri-render dopo il sì.
 - **Niente CTA nell'immagine.**
 
