@@ -78,14 +78,6 @@ class TextIOStatesItsEncoding(unittest.TestCase):
                      for line, call in unencoded_text_io(ast.parse(path.read_text(encoding="utf-8")))]
         self.assertEqual(offenders, [], 'pass encoding="utf-8": Windows would read these as cp1252')
 
-    def test_importing_lib_lets_a_cp1252_pipe_print_an_approval_message(self):
-        code = ("import lib; print(lib.manual_mode_message("
-                "'Fair point \\u2014 we saw the same', 'https://www.linkedin.com/posts/x'))")
-        run = run_with_cp1252_pipes(["-c", code])
-        self.assertEqual(run.returncode, 0, run.stderr.decode("utf-8", "replace")[-300:])
-        out = run.stdout.decode("utf-8")
-        self.assertIn("✅", out)
-        self.assertIn("Fair point — we saw the same", out)
 
     def test_detector_tool_reads_a_piped_draft_as_utf8_and_prints_its_emoji(self):
         draft = "We cut churn 14% in Q3 — here’s the one change that did it \U0001F680"

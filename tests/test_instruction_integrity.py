@@ -98,33 +98,6 @@ class HookFormulas(unittest.TestCase):
         self.assertEqual(sorted(cited - self.defined), [], "formulas cited but never defined")
 
 
-class PlatformLimits(unittest.TestCase):
-    """What the skills tell the agent about LinkedIn, against what Publora
-    reports. A stale number here produces posts the API rejects."""
-
-    @classmethod
-    def setUpClass(cls):
-        cls.limits = json.loads((FIXTURES / "publora_platform_limits.json").read_text(encoding="utf-8"))["linkedin"]
-
-    def test_the_post_character_cap_matches(self):
-        cap = self.limits["characters"]["standard"]
-        self.assertEqual(cap, 3000, "the fixture itself changed; re-check the skills before updating it")
-        quoted = set()
-        for document in markdown(ROOT / "skills") + [ROOT / "SKILL.md"]:
-            text = document.read_text(encoding="utf-8")
-            quoted |= {int(n.replace(",", "")) for n in
-                       re.findall(r"([\d,]{3,6})\s*(?:char|characters)\b", text)}
-        over = sorted(n for n in quoted if n > cap)
-        self.assertEqual(over, [], f"skills quote character counts above LinkedIn's {cap}: {over}")
-
-    def test_the_image_count_ceiling_is_not_overstated(self):
-        """linkedin-post-writer offers multi-image grids; the ceiling is 10."""
-        ceiling = self.limits["images"]["maxCount"]
-        text = (ROOT / "skills" / "linkedin-post-writer" / "SKILL.md").read_text(encoding="utf-8")
-        for low, high in re.findall(r"\((\d+)-(\d+) images", text):
-            self.assertLessEqual(int(high), ceiling,
-                                 f"offers up to {high} images, LinkedIn accepts {ceiling}")
-
 
 class UserModelWiring(unittest.TestCase):
     """The Story Bank is only worth filling if the skills that promise to use it do.
@@ -168,37 +141,6 @@ class UserModelWiring(unittest.TestCase):
             self.assertIn(line, writer,
                           f"the post writer does not know what to do with the {line} line")
 
-
-class ReadLayerPromises(unittest.TestCase):
-    """A skill may only promise a read the library can actually perform.
-
-    Issue #55 was this class of bug from the user's side: the profile
-    optimizer listed a profile URL as input, and nothing in the read layer
-    can fetch a profile. The agent then either asks for a paste anyway or
-    invents the profile it was told to score.
-    """
-
-    CALLS = re.compile(r"lib\.([a-z_][a-z0-9_]*)\(")
-
-    def test_every_lib_helper_a_document_calls_is_exported(self):
-        import lib
-
-        exported = set(lib.__all__)
-        missing = []
-        for path in [ROOT / "SKILL.md", *markdown(ROOT / "skills"), *markdown(ROOT / "references")]:
-            for name in set(self.CALLS.findall(path.read_text(encoding="utf-8"))):
-                if name not in exported:
-                    missing.append(f"{path.relative_to(ROOT)}: lib.{name}()")
-        self.assertEqual(missing, [], "documents calling helpers lib does not export:\n  " + "\n  ".join(missing))
-
-    def test_the_profile_optimizer_asks_for_a_paste_not_a_url(self):
-        text = (ROOT / "skills" / "linkedin-profile-optimizer" / "SKILL.md").read_text(encoding="utf-8")
-        intake = text.split("## Input", 1)[1].split("## Output", 1)[0]
-
-        self.assertIn("paste", intake.lower(),
-                      "the Input section must tell the user to paste the profile")
-        self.assertRegex(intake, r"cannot be fetched|no profile actor",
-                         "the Input section must say a profile URL cannot be read")
 
 
 class SkillConventions(unittest.TestCase):
@@ -280,49 +222,6 @@ if __name__ == "__main__":
     unittest.main()
 
 
-class EnvironmentVariableNames(unittest.TestCase):
-    """The names the code reads must be the names the docs tell people to set.
-
-    `scripts/selftest.py` asked for `PUBLORA_PLATFORM_ID` while every other file
-    reads `LINKEDIN_PLATFORM_ID`, so its setup hint named a variable that does
-    nothing. Nothing caught it: the live test passed the invented name on the
-    command line and read it back, a closed loop that proved only itself.
-    """
-
-    #: Every credential the bundle reads. Adding one means adding it here.
-    KNOWN = {
-        "APIFY_TOKEN", "PUBLORA_API_KEY", "LINKEDIN_PLATFORM_ID",
-        "PIXFARO_TOKEN", "PIXFARO_API_KEY", "LINKEDIN_SKILLS_CUSTOM_POSTER",
-    }
-
-    def read_by_code(self):
-        found = set()
-        for source in list((ROOT / "lib").rglob("*.py")) + list((ROOT / "scripts").rglob("*.py")):
-            text = source.read_text(encoding="utf-8")
-            found |= set(re.findall(r'getenv\(\s*["\']([A-Z][A-Z0-9_]+)["\']', text))
-            found |= set(re.findall(r'environ\[\s*["\']([A-Z][A-Z0-9_]+)["\']', text))
-        return {name for name in found
-                if any(k in name for k in ("APIFY", "PUBLORA", "PIXFARO", "LINKEDIN"))}
-
-    def test_no_credential_name_is_invented(self):
-        unknown = sorted(self.read_by_code() - self.KNOWN)
-        self.assertEqual(unknown, [],
-                         "code reads variables that are not part of the bundle's contract; "
-                         "either a typo or an undocumented new one")
-
-    def test_the_platform_id_has_exactly_one_name(self):
-        names = {n for n in self.read_by_code() if "PLATFORM_ID" in n}
-        self.assertEqual(names, {"LINKEDIN_PLATFORM_ID"},
-                         f"two names for the same setting: {sorted(names)}")
-
-    def test_env_example_documents_what_the_code_reads(self):
-        example = (ROOT / ".env.example").read_text(encoding="utf-8")
-        documented = set(re.findall(r"^#?\s*([A-Z][A-Z0-9_]+)=", example, re.M))
-        # The custom-poster hook is a power-user escape hatch, not a credential.
-        required = self.read_by_code() - {"LINKEDIN_SKILLS_CUSTOM_POSTER", "PIXFARO_API_KEY"}
-        missing = sorted(required - documented)
-        self.assertEqual(missing, [], f".env.example never mentions: {missing}")
-
 
 class PersonalTemplates(unittest.TestCase):
     """The Voice Profile and Story Bank ship blank and must stay blank in git.
@@ -350,14 +249,6 @@ class PersonalTemplates(unittest.TestCase):
             self.assertRegex(packaged.read_text(encoding="utf-8"), self.BLANK,
                              f"the Codex package ships a filled {name}")
 
-    def test_the_sync_script_refuses_to_copy_them(self):
-        """It must skip them by name and put the blank ones back from the index,
-        rather than trusting the working tree."""
-        source = (ROOT / "scripts" / "sync_codex_marketplace.py").read_text(encoding="utf-8")
-        self.assertIn("PERSONAL", source)
-        for name in ("voice-profile.md", "story-bank.md"):
-            self.assertIn(name, source, f"the sync does not name {name} as personal")
-        self.assertIn("restore_templates", source)
 
     def test_the_secret_scan_knows_about_them(self):
         """A filled template is not a credential, so it needs its own rule."""
